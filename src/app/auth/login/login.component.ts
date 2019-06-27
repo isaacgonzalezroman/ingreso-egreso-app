@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
+import { AppState } from '../../app.reducer';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,24 +11,26 @@ import { Subscription } from 'rxjs';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  cargando: boolean = false;
+  cargando: boolean;
   subscription: Subscription;
 
-  constructor(
-    private authService: AuthService,
-    public store: Store<AppState>) { }
+  constructor( public authService: AuthService,
+               private store: Store<AppState> ) { }
 
   ngOnInit() {
+
     this.subscription = this.store.select('ui')
-      .subscribe( user => this.cargando = user.isLoading );
+                        .subscribe( ui => this.cargando = ui.isLoading );
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  login(data) {
-    this.authService.login(data.email, data.password);
+  onSubmit( data: any ) {
+
+    this.authService.login( data.email, data.password );
+
   }
 
 }
